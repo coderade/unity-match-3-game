@@ -73,6 +73,11 @@ public class Grid : MonoBehaviour {
                 if (pieces[x, y].isMovable()) {
                     pieces[x, y].MovableComponent.Move(x, y);
                 }
+
+                if (pieces[x, y].isColored())
+                {
+                    pieces[x, y].ColorComponent.SetColor((ColorPiece.ColorType)Random.Range(0, pieces[x, y].ColorComponent.NumColors));
+                }
             }
         }
     }

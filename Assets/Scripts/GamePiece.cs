@@ -48,8 +48,16 @@ public class GamePiece : MonoBehaviour
         get { return movableComponent; }
     }
 
+    private ColorPiece colorComponent;
+
+    public ColorPiece ColorComponent
+    {
+        get { return colorComponent; }
+    }
+
     void Awake() {
         movableComponent = GetComponent<MovablePiece>();
+        colorComponent = GetComponent<ColorPiece>();
     }
 
     public void Init(int _x, int _y, Grid _grid, Grid.PieceType _type)
@@ -62,6 +70,11 @@ public class GamePiece : MonoBehaviour
 
     public bool isMovable() {
         return movableComponent != null;
+    }
+
+    public bool isColored()
+    {
+        return colorComponent != null;
     }
 
     void Start()
