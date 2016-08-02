@@ -61,19 +61,23 @@ public class Grid : MonoBehaviour {
         {
             for (int y = 0; y < yDim; y++)
             {
-               GameObject newPiece = (GameObject)Instantiate(piecePrefabDict[PieceType.NORMAL],
-                   GetWorldPosition(x, y), Quaternion.identity);
+                GameObject newPiece = (GameObject)Instantiate(piecePrefabDict[PieceType.NORMAL],
+                    Vector3.zero, Quaternion.identity);
 
                 newPiece.name = "Piece(" + x + " , " + y + ")";
                 newPiece.transform.parent = transform;
 
                 pieces[x, y] = newPiece.GetComponent<GamePiece>();
                 pieces[x, y].Init(x, y, this, PieceType.NORMAL);
+
+                if (pieces[x, y].isMovable()) {
+                    pieces[x, y].MovableComponent.Move(x, y);
+                }
             }
         }
     }
 
-    Vector2 GetWorldPosition(int x, int y) {
+    public Vector2 GetWorldPosition(int x, int y) {
         return new Vector2(transform.position.x - xDim / 2.0f + x,
             transform.position.y + yDim / 2.0f - y);
     }
