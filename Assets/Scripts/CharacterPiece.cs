@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class TypePiece : MonoBehaviour {
+public class CharacterPiece : MonoBehaviour {
 
     public enum CharacterType   {
         LINK,

@@ -48,16 +48,16 @@ public class GamePiece : MonoBehaviour
         get { return movableComponent; }
     }
 
-    private TypePiece characterComponent;
+    private CharacterPiece characterComponent;
 
-    public TypePiece ColorComponent
+    public CharacterPiece CharacterComponent
     {
         get { return characterComponent; }
     }
 
     void Awake() {
         movableComponent = GetComponent<MovablePiece>();
-        characterComponent = GetComponent<TypePiece>();
+       characterComponent = GetComponent<CharacterPiece>();
     }
 
     public void Init(int _x, int _y, Grid _grid, Grid.PieceType _type)
@@ -72,19 +72,16 @@ public class GamePiece : MonoBehaviour
         return movableComponent != null;
     }
 
-    public bool hasCharacter()
-    {
+    public bool hasCaracther() {
         return characterComponent != null;
     }
 
-    void Start()
-    {
+    void Start() {
 
     }
 
 
-    void Update()
-    {
+    void Update()  {
 
     }
 }
