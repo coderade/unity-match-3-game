@@ -1,3 +1,1 @@
-#Unity Match3 Game
-
-README
+#Zelda Hirule Warriors Match3 Game
