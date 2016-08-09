@@ -88,8 +88,8 @@ public class Grid : MonoBehaviour {
 
             }
         }
-        Destroy(pieces[4, 4].gameObject);
-        SpawnNewPiece(4, 4, PieceType.OBSTACLE);
+        //Destroy(pieces[4, 4].gameObject);
+        //SpawnNewPiece(4, 4, PieceType.OBSTACLE);
 
 
         //TEST diagonal fill where has obstacles
