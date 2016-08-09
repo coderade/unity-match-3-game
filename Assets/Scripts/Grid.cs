@@ -33,6 +33,11 @@ public class Grid : MonoBehaviour {
 
     private bool inverse = false;
 
+    //the piece that we press down on,
+    private GamePiece pressedPiece;
+
+    //the last piece that our mouse entered the bounding box of.
+    private GamePiece enteredPiece;
 
     void Start()
     {
@@ -238,6 +243,51 @@ public class Grid : MonoBehaviour {
         return pieces[x, y];
     }
 
+    //verifies if two pieces are adjacent - This returns true if piece one and piece two have the same x-coordinate
+    //and the y-coordinates are within one space of each other and the same if  if the y-coordinates are equal, 
+    //and the x-coordinates are within one space of each other 
+    public bool isAdjacent(GamePiece piece1, GamePiece piece2) {
+        return (piece1.X == piece2.X && (int)Mathf.Abs(piece1.Y - piece2.Y) == 1) 
+            || (piece1.Y == piece2.Y && (int)Mathf.Abs(piece1.X - piece2.X) == 1);
+    }
+
+    //Method to swap the the pieces if they're adjacent
+    public void SwapPieces(GamePiece piece1, GamePiece piece2) {
+        //Swap the pieces if they're both movable
+        if (piece1.isMovable() && piece2.isMovable()) {
+
+            // If they are, then we assign them to each other's positions in our pieces array.
+            pieces[piece1.X, piece1.Y] = piece2;
+            pieces[piece2.X, piece2.Y] = piece1;
+
+            //stores the x- and y-coordinates of piece1 in temporary variables to don't get overridden when we move the piece
+            int piece1X = piece1.X;
+            int piece1Y = piece1.Y;
+
+            //So I move the piece1 to piece2's position, and piece2 to piece1's position that we stored earlier.
+            piece1.MovableComponent.Move(piece2.X, piece2.Y, fillTime);
+            piece2.MovableComponent.Move(piece1X, piece1Y, fillTime);
+        }
+    }
+
+    //Method for when we press on a piece
+    public void PressPiece(GamePiece piece) {
+        pressedPiece = piece;
+    }
+
+    //Method for when we enter a piece.
+    public void EnterPiece(GamePiece piece) {
+        enteredPiece = piece;
+    }
+
+    public void ReleasePiece() {
+        //Check if the pressed piece and the piece we were hovering over 
+        //are adjacent to one another.
+        if (isAdjacent(pressedPiece, enteredPiece)) {
+            //if they are, we swap them
+            SwapPieces(pressedPiece, enteredPiece);
+        }
+    }
 
     void Update () {
 	

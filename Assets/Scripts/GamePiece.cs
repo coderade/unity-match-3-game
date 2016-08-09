@@ -56,7 +56,7 @@ public class GamePiece : MonoBehaviour
     }
 
     void Awake() {
-        movableComponent = GetComponent<MovablePiece>();
+       movableComponent = GetComponent<MovablePiece>();
        characterComponent = GetComponent<CharacterPiece>();
     }
 
@@ -66,6 +66,18 @@ public class GamePiece : MonoBehaviour
         y = _y;
         grid = _grid;
         type = _type;
+    }
+
+    void OnMouseEnter() {
+        grid.EnterPiece(this);
+    }
+
+    void OnMouseDown() {
+        grid.PressPiece(this);
+    }
+
+    void OnMouseUp() {
+        grid.ReleasePiece();
     }
 
     public bool isMovable() {
