@@ -276,8 +276,6 @@ public class Grid : MonoBehaviour {
                 pieces[piece1.X, piece1.Y] = piece1;
                 pieces[piece2.X, piece2.Y] = piece2;
             }
-
-          
         }
     }
 
@@ -339,63 +337,175 @@ public class Grid : MonoBehaviour {
             if (horizontalPieces.Count >= 3) {
                 for (int i = 0; i < horizontalPieces.Count; i++) {
                     matchingPieces.Add(horizontalPieces[i]);
-                }
-            }
 
-            if (matchingPieces.Count >= 3) {
-                return matchingPieces;
-            }
+                    //Traverse vertically if a match is found
+                    for (int dir = 0; dir <= 1; dir++)
+                    {
+                        for (int yOffset = 1; yOffset < yDim; yOffset++)
+                        {
+                            int y;
 
+                            if (dir == 0)
+                            { //Up
+                                y = newY - yOffset;
+                            }
+                            else
+                            { //Down 
+                                y = newY + yOffset;
+                            }
 
-            //Didn't find anything going horizontally first,
-            //so now check vertically
-            verticalPieces.Add(piece);
+                            //If the coordinate of the adjacent piece is outside of our grids dimensions,
+                            //break out of the loop.
+                            if (y < 0 || y >= yDim)
+                            {
+                                break;
+                            }
 
-            for (int dir = 0; dir <= 1; dir++) {
-                for (int yOffset = 1; yOffset < xDim; yOffset++)
-                {
-                    int y;
+                            //If the piece matches, we add it to the vertical pieces list. 
+                            //If the piece doesn't match, we break out of the loop.
+                            if (pieces[horizontalPieces[i].X, y].hasCaracther()
+                                && pieces[horizontalPieces[i].X, y].CharacterComponent.Character == characther)
+                            {
+                                verticalPieces.Add(pieces[horizontalPieces[i].X, y]);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
 
-                    if (dir == 0)
-                    {//Left
-                        y = newY - yOffset;
+                    //check if have enough vertical pieces to form a match
+                    // we need two vertical pieces to form a match.
+                    if (verticalPieces.Count < 2)
+                    {
+                        //If we don't have enough vertical pieces for a match, we clear the vertical pieces list 
+                        //so that we can get ready to iterate along the next horizontal matching piece.
+                        verticalPieces.Clear();
                     }
                     else
-                    {//Right
-                        y = newY + yOffset;
-                    }
-
-                    if (y < 0 || y >= yDim)
                     {
+                        for (int j = 0; j < verticalPieces.Count; j++)
+                        {
+                            matchingPieces.Add(verticalPieces[j]);
+                        }
+
                         break;
                     }
-
-                    //check if the adjacent piece is a match. 
-                    if (pieces[newX, y].hasCaracther() && pieces[newX, y].CharacterComponent.Character == characther)
-                    {
-                        verticalPieces.Add(pieces[newX, y]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                }
+                }                   
             }
+                    
+ 
 
-            if (verticalPieces.Count >= 3)
-            {
-                for (int i = 0; i < verticalPieces.Count; i++)
-                {
-                    matchingPieces.Add(verticalPieces[i]);
-                }
-            }
-
-            if (matchingPieces.Count >= 3)
-            {
+        if (matchingPieces.Count >= 3) {
                 return matchingPieces;
+        }
+
+
+        //Didn't find anything going horizontally first,
+        //so now check vertically
+        horizontalPieces.Clear();
+        verticalPieces.Clear();
+        verticalPieces.Add(piece);
+
+        for (int dir = 0; dir <= 1; dir++) {
+            for (int yOffset = 1; yOffset < yDim; yOffset++)
+            {
+                int y;
+
+                if (dir == 0)
+                {//Up
+                    y = newY - yOffset;
+                }
+                else
+                {//Down
+                    y = newY + yOffset;
+                }
+
+                if (y < 0 || y >= yDim)
+                {
+                    break;
+                }
+
+                //check if the adjacent piece is a match. 
+                if (pieces[newX, y].hasCaracther()
+                        && pieces[newX, y].CharacterComponent.Character == characther) {
+                    verticalPieces.Add(pieces[newX, y]);
+                } else {
+                    break;
+                }
+
             }
         }
+
+        if (verticalPieces.Count >= 3) {
+            for (int i = 0; i < verticalPieces.Count; i++)
+            {
+                matchingPieces.Add(verticalPieces[i]);
+                //Traverse vertically if a match is found
+                for (int dir = 0; dir <= 1; dir++)
+                {
+                    for (int xOffset = 1; xOffset < xDim; xOffset++)
+                    {
+                        int x;
+
+                        if (dir == 0)
+                        { //Left
+                            x = newX - xOffset;
+                        }
+                        else
+                        { //Right 
+                            x = newX + xOffset;
+                        }
+
+                        //If the coordinate of the adjacent piece is outside of our grids dimensions,
+                        //break out of the loop.
+                        if (x < 0 || x >= xDim)
+                        {
+                            break;
+                        }
+
+                        //If the piece matches, we add it to the vertical pieces list. 
+                        //If the piece doesn't match, we break out of the loop.
+                        if (pieces[x, verticalPieces[i].Y].hasCaracther()
+                            && pieces[x, verticalPieces[i].Y].CharacterComponent.Character == characther)
+                        {
+                            verticalPieces.Add(pieces[x, verticalPieces[i].Y]);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                //check if have enough horizontal pieces to form a match
+                //need just two horizontal pieces to form a match.
+                if (horizontalPieces.Count < 2)
+                {
+                    //If we don't have enough horizontal pieces for a match, we need to clear the horizontal pieces list 
+                    //so that we can get ready to iterate along the next horizontal matching piece.
+                    horizontalPieces.Clear();
+                }
+                else
+                {
+                    for (int j = 0; j < horizontalPieces.Count; j++)
+                    {
+                        matchingPieces.Add(horizontalPieces[j]);
+                    }
+
+                    break;
+                }
+
+                }
+        }
+
+        if (matchingPieces.Count >= 3)
+        {
+            return matchingPieces;
+
+        }
+    }
 
         //if no match is found
         return null;
