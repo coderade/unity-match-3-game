@@ -260,13 +260,24 @@ public class Grid : MonoBehaviour {
             pieces[piece1.X, piece1.Y] = piece2;
             pieces[piece2.X, piece2.Y] = piece1;
 
-            //stores the x- and y-coordinates of piece1 in temporary variables to don't get overridden when we move the piece
-            int piece1X = piece1.X;
-            int piece1Y = piece1.Y;
+            //just swap if the piece get a match
+            if (GetMatch(piece1, piece2.X, piece2.Y) != null || GetMatch(piece2, piece1.X, piece1.Y) != null)
+            {
+                //stores the x- and y-coordinates of piece1 in temporary variables to don't get overridden when we move the piece
+                int piece1X = piece1.X;
+                int piece1Y = piece1.Y;
 
-            //So I move the piece1 to piece2's position, and piece2 to piece1's position that we stored earlier.
-            piece1.MovableComponent.Move(piece2.X, piece2.Y, fillTime);
-            piece2.MovableComponent.Move(piece1X, piece1Y, fillTime);
+                //So I move the piece1 to piece2's position, and piece2 to piece1's position that we stored earlier.
+                piece1.MovableComponent.Move(piece2.X, piece2.Y, fillTime);
+                piece2.MovableComponent.Move(piece1X, piece1Y, fillTime);
+            }
+            //else  swap the pieces back to their original positions in the array
+            else {
+                pieces[piece1.X, piece1.Y] = piece1;
+                pieces[piece2.X, piece2.Y] = piece2;
+            }
+
+          
         }
     }
 
@@ -287,6 +298,107 @@ public class Grid : MonoBehaviour {
             //if they are, we swap them
             SwapPieces(pressedPiece, enteredPiece);
         }
+    }
+
+    public List<GamePiece> GetMatch(GamePiece piece, int newX, int newY) {
+        if (piece.hasCaracther()) {
+            CharacterPiece.CharacterType characther = piece.CharacterComponent.Character;
+            List<GamePiece> horizontalPieces = new List<GamePiece>();
+            List<GamePiece> verticalPieces = new List<GamePiece>();
+            List<GamePiece> matchingPieces = new List<GamePiece>();
+
+            //First check horizontal
+            horizontalPieces.Add(piece);
+
+            for (int dir = 0; dir <= 1; dir++) {
+                //xOffset =  xOffset is how far away the adjacent piece is from our central piece.
+                for (int xOffset = 1; xOffset < xDim; xOffset++) {
+                    int x;
+
+                    if (dir == 0){//Left
+                        x = newX - xOffset;
+                    }
+                    else {//Right
+                        x = newX + xOffset;
+                    }
+
+                    if (x < 0 || x >= xDim) {
+                        break;
+                    }
+
+                    //check if the adjacent piece is a match. 
+                    if (pieces[x, newY].hasCaracther() && pieces[x, newY].CharacterComponent.Character == characther) {
+                        horizontalPieces.Add(pieces[x, newY]);
+                    } else {
+                        break;
+                    }
+
+                }
+            }
+
+            if (horizontalPieces.Count >= 3) {
+                for (int i = 0; i < horizontalPieces.Count; i++) {
+                    matchingPieces.Add(horizontalPieces[i]);
+                }
+            }
+
+            if (matchingPieces.Count >= 3) {
+                return matchingPieces;
+            }
+
+
+            //Didn't find anything going horizontally first,
+            //so now check vertically
+            verticalPieces.Add(piece);
+
+            for (int dir = 0; dir <= 1; dir++) {
+                for (int yOffset = 1; yOffset < xDim; yOffset++)
+                {
+                    int y;
+
+                    if (dir == 0)
+                    {//Left
+                        y = newY - yOffset;
+                    }
+                    else
+                    {//Right
+                        y = newY + yOffset;
+                    }
+
+                    if (y < 0 || y >= yDim)
+                    {
+                        break;
+                    }
+
+                    //check if the adjacent piece is a match. 
+                    if (pieces[newX, y].hasCaracther() && pieces[newX, y].CharacterComponent.Character == characther)
+                    {
+                        verticalPieces.Add(pieces[newX, y]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                }
+            }
+
+            if (verticalPieces.Count >= 3)
+            {
+                for (int i = 0; i < verticalPieces.Count; i++)
+                {
+                    matchingPieces.Add(verticalPieces[i]);
+                }
+            }
+
+            if (matchingPieces.Count >= 3)
+            {
+                return matchingPieces;
+            }
+        }
+
+        //if no match is found
+        return null;
     }
 
     void Update () {
