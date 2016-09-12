@@ -337,12 +337,16 @@ public class Grid : MonoBehaviour {
             if (horizontalPieces.Count >= 3) {
                 for (int i = 0; i < horizontalPieces.Count; i++) {
                     matchingPieces.Add(horizontalPieces[i]);
+                }                   
+            }
 
+
+            if (horizontalPieces.Count >= 3)
+            {
+                for (int i = 0; i < horizontalPieces.Count; i++) {
                     //Traverse vertically if a match is found
-                    for (int dir = 0; dir <= 1; dir++)
-                    {
-                        for (int yOffset = 1; yOffset < yDim; yOffset++)
-                        {
+                    for (int dir = 0; dir <= 1; dir++) {
+                        for (int yOffset = 1; yOffset < yDim; yOffset++) {
                             int y;
 
                             if (dir == 0)
@@ -364,12 +368,10 @@ public class Grid : MonoBehaviour {
                             //If the piece matches, we add it to the vertical pieces list. 
                             //If the piece doesn't match, we break out of the loop.
                             if (pieces[horizontalPieces[i].X, y].hasCaracther()
-                                && pieces[horizontalPieces[i].X, y].CharacterComponent.Character == characther)
-                            {
+                                && pieces[horizontalPieces[i].X, y].CharacterComponent.Character == characther) {
                                 verticalPieces.Add(pieces[horizontalPieces[i].X, y]);
                             }
-                            else
-                            {
+                            else{
                                 break;
                             }
                         }
@@ -377,25 +379,19 @@ public class Grid : MonoBehaviour {
 
                     //check if have enough vertical pieces to form a match
                     // we need two vertical pieces to form a match.
-                    if (verticalPieces.Count < 2)
-                    {
+                    if (verticalPieces.Count < 2)  {
                         //If we don't have enough vertical pieces for a match, we clear the vertical pieces list 
                         //so that we can get ready to iterate along the next horizontal matching piece.
                         verticalPieces.Clear();
-                    }
-                    else
-                    {
-                        for (int j = 0; j < verticalPieces.Count; j++)
-                        {
+                    } else {
+                        for (int j = 0; j < verticalPieces.Count; j++) {
                             matchingPieces.Add(verticalPieces[j]);
                         }
 
                         break;
                     }
-                }                   
-            }
-                    
- 
+                }
+         }
 
         if (matchingPieces.Count >= 3) {
                 return matchingPieces;
@@ -442,11 +438,14 @@ public class Grid : MonoBehaviour {
             for (int i = 0; i < verticalPieces.Count; i++)
             {
                 matchingPieces.Add(verticalPieces[i]);
+            }
+        }
+
+        if (verticalPieces.Count >= 3) {
+            for (int i = 0; i < verticalPieces.Count; i++) {
                 //Traverse vertically if a match is found
-                for (int dir = 0; dir <= 1; dir++)
-                {
-                    for (int xOffset = 1; xOffset < xDim; xOffset++)
-                    {
+                for (int dir = 0; dir <= 1; dir++) {
+                    for (int xOffset = 1; xOffset < xDim; xOffset++) {
                         int x;
 
                         if (dir == 0)
@@ -468,12 +467,9 @@ public class Grid : MonoBehaviour {
                         //If the piece matches, we add it to the vertical pieces list. 
                         //If the piece doesn't match, we break out of the loop.
                         if (pieces[x, verticalPieces[i].Y].hasCaracther()
-                            && pieces[x, verticalPieces[i].Y].CharacterComponent.Character == characther)
-                        {
-                            verticalPieces.Add(pieces[x, verticalPieces[i].Y]);
-                        }
-                        else
-                        {
+                            && pieces[x, verticalPieces[i].Y].CharacterComponent.Character == characther) {
+                                horizontalPieces.Add(pieces[x, verticalPieces[i].Y]);
+                        } else {
                             break;
                         }
                     }
@@ -481,27 +477,21 @@ public class Grid : MonoBehaviour {
 
                 //check if have enough horizontal pieces to form a match
                 //need just two horizontal pieces to form a match.
-                if (horizontalPieces.Count < 2)
-                {
+                if (horizontalPieces.Count < 2) {
                     //If we don't have enough horizontal pieces for a match, we need to clear the horizontal pieces list 
                     //so that we can get ready to iterate along the next horizontal matching piece.
                     horizontalPieces.Clear();
-                }
-                else
-                {
-                    for (int j = 0; j < horizontalPieces.Count; j++)
-                    {
+                } else {
+                    for (int j = 0; j < horizontalPieces.Count; j++) {
                         matchingPieces.Add(horizontalPieces[j]);
                     }
 
                     break;
                 }
-
-                }
+            }
         }
 
-        if (matchingPieces.Count >= 3)
-        {
+        if (matchingPieces.Count >= 3) {
             return matchingPieces;
 
         }
