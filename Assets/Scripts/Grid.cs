@@ -547,10 +547,37 @@ public class Grid : MonoBehaviour {
 
             SpawnNewPiece(x, y, PieceType.EMPTY);
 
+            ClearObstacles(x, y);
+
             return true;
         }
         else {
             return false;
+        }
+    }
+
+    public void ClearObstacles(int x, int y) {
+        for (int adjacentX = x - 1; adjacentX <= x + 1; adjacentX++) {
+            if(adjacentX != x && adjacentX >=0 && adjacentX < xDim) {
+                if (pieces[adjacentX, y].Type == PieceType.OBSTACLE && 
+                    pieces[adjacentX, y].isClearable()) {
+                    pieces[adjacentX, y].ClearableComponent.Clear();
+                    SpawnNewPiece(adjacentX, y, PieceType.EMPTY);
+                }
+            }
+        }
+
+        for (int adjacentY = y - 1; adjacentY <= y + 1; adjacentY++)
+        {
+            if (adjacentY != x && adjacentY >= 0 && adjacentY < yDim)
+            {
+                if (pieces[x, adjacentY].Type == PieceType.OBSTACLE &&
+                    pieces[x, adjacentY].isClearable())
+                {
+                    pieces[x, adjacentY].ClearableComponent.Clear();
+                    SpawnNewPiece(x, adjacentY, PieceType.EMPTY);
+                }
+            }
         }
     }
 
