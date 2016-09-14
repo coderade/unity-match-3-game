@@ -125,12 +125,22 @@ public class Grid : MonoBehaviour {
     }
 
     public IEnumerator Fill() {
+        bool needsRefil = true;
+
         //The while loop we'll call the FillStep method and if it's true 
         //it will just keep calling the method until it returns false
-        while (FillStep()) {
-            inverse = !inverse;
+
+        while (needsRefil) {
+
             yield return new WaitForSeconds(fillTime);
+            while (FillStep()) {
+                inverse = !inverse;
+                yield return new WaitForSeconds(fillTime);
+            }
+
+            needsRefil = ClearAllValidMatches();
         }
+        
     }
 
     public bool FillStep() {
@@ -270,6 +280,12 @@ public class Grid : MonoBehaviour {
                 //So I move the piece1 to piece2's position, and piece2 to piece1's position that we stored earlier.
                 piece1.MovableComponent.Move(piece2.X, piece2.Y, fillTime);
                 piece2.MovableComponent.Move(piece1X, piece1Y, fillTime);
+
+                //After we successfully swap two pieces, 
+                // call ClearAllValidMatches to clear the board.
+                ClearAllValidMatches();
+
+                StartCoroutine(Fill());
             }
             //else  swap the pieces back to their original positions in the array
             else {
@@ -499,6 +515,43 @@ public class Grid : MonoBehaviour {
 
         //if no match is found
         return null;
+    }
+
+    public bool ClearAllValidMatches() {
+        bool needsRefill = false;
+
+        for (int y = 0; y < yDim; y++) {
+            for (int x = 0; x < xDim; x++) {
+                if (pieces[x, y].isClearable()) {
+                    List<GamePiece> match = GetMatch(pieces[x, y], x, y);
+
+                    if (match != null) {
+                        for (int i = 0; i < match.Count; i++) {
+                            if (ClearPiece(match[i].X, match[i].Y)) {
+                                needsRefill = true;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+
+        return needsRefill;
+    }
+
+    public bool ClearPiece(int x, int y) {
+        if (pieces[x, y].isClearable() && 
+            !pieces[x, y].ClearableComponent.IsBeingCleared){
+            pieces[x, y].ClearableComponent.Clear();
+
+            SpawnNewPiece(x, y, PieceType.EMPTY);
+
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     void Update () {

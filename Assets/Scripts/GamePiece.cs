@@ -60,7 +60,7 @@ public class GamePiece : MonoBehaviour
 
     public ClearablePiece ClearableComponent
     {
-        get { return ClearableComponent; }
+        get { return clearableComponent; }
     }
 
 
